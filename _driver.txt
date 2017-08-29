@@ -1,0 +1,107 @@
+usage: driver.py [-h] [-g GPU] -c
+                 [{224,256,384,480,640,299,492} [{224,256,384,480,640,299,492} ...]]
+                 [-m [{accuracy,kappa,sensitivity_specificity} [{accuracy,kappa,sensitivity_specificity} ...]]]
+                 [-r TRAIN_DIR] [-v VAL_DIR] [-t TEST_DIR] [-e EPOCHS]
+                 [-n NUM_CROPS] [-l LOAD_PATH] [-a ARCHITECTURE]
+                 [--stats_freq STATS_FREQ] [--summary_freq SUMMARY_FREQ]
+                 [--validate_freq VALIDATE_FREQ]
+                 [--model_save_freq MODEL_SAVE_FREQ] [-d] [-b BATCH] [-p]
+                 [--multi_test MULTI_TEST]
+
+Options to run the network.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -g GPU, --gpu GPU     the device id of gpu.
+  -c [{224,256,384,480,640,299,492} [{224,256,384,480,640,299,492} ...]], --crop [{224,256,384,480,640,299,492} [{224,256,384,480,640,299,492} ...]]
+                        the crop size, valid crop sizes are [224, 256, 384,
+                        480, 640, 299, 492], represents multi scale training
+  -m [{accuracy,kappa,sensitivity_specificity} [{accuracy,kappa,sensitivity_specificity} ...]], --metric [{accuracy,kappa,sensitivity_specificity} [{accuracy,kappa,sensitivity_specificity} ...]]
+                        the metric type of evaluation must be
+                        dict_keys(['accuracy', 'kappa',
+                        'sensitivity_specificity'])
+  -r TRAIN_DIR, --train_dir TRAIN_DIR
+                        the path of training folder.
+  -v VAL_DIR, --val_dir VAL_DIR
+                        the path of validating folder.
+  -t TEST_DIR, --test_dir TEST_DIR
+                        the path of testing folder.
+  -e EPOCHS, --epochs EPOCHS
+                        the total number of epochs, default is 50000.
+  -n NUM_CROPS, --num_crops NUM_CROPS
+                        the number of crops when testing.
+  -l LOAD_PATH, --load_path LOAD_PATH
+                        the number of loading models.
+  -a ARCHITECTURE, --architecture ARCHITECTURE
+                        the architecture of network, there are resnet_v2_50,
+                        resnet_v2_101, resnet_v2_152, resnet_v2_200
+  --stats_freq STATS_FREQ
+                        the frequency of displaying loss.
+  --summary_freq SUMMARY_FREQ
+                        the frequency of saving summaries.
+  --validate_freq VALIDATE_FREQ
+                        the frequency of validating.
+  --model_save_freq MODEL_SAVE_FREQ
+                        the frequency of model snapshot.
+  -d, --debug           the flag to control whether to debug or not.
+  -b BATCH, --batch BATCH
+                        set the batch size, default is 10.
+  -p, --pretrain        the flag to control whether to use ImageNet pretrain
+                        model or not.
+  --multi_test MULTI_TEST
+                        whether to use multi test or not
+
+
+
+############# Training ################
+python driver_save_result.py   --gpu 0       \
+                   --crop 492     \
+                   --load_path SAVE/Models/Scale_492/model.ckpt-25000   \
+                   --test_dir /media/doubility/NUMEROUS/kaggle/process_data/validate   \
+                   --metric kappa accuracy  \
+                   --architecture InceptionResnetV2 \
+                   --multi_test 8  \
+                   --batch 1
+
+/media/doubility/NUMEROUS/kaggle/process_data/validate
+/media/zhoukang/DATA/kaggle/process_data/validate
+/home/liuwen/ssd/kaggle/process_data/validate
+
+python multi_process_testing.py   --gpu 2        \
+                   --crop 720     \
+                   --attention Conv2d_2a_3x3    \
+                   --load_path SAVE/Models/Scale_720-Conv2d_2a_3x3   \
+                   --test_dir /home/liuwen/ssd/kaggle/process_data/validate   \
+                   --metric kappa accuracy  \
+                   --architecture InceptionResnetV2 \
+                   --multi_test 8  \
+                   --batch 1
+
+ATTENTIONS = ['Conv2d_2a_3x3', 'MaxPool_3a_3x3', 'MaxPool_5a_3x3', 'Mixed_6a', 'Mixed_7a']
+
+python3 driver.py   --gpu 1       \
+                   --crop 720    \
+                   --attention Conv2d_2a_3x3    \
+                   --architecture InceptionResnetV2  \
+                   --pretrain  PreTrains/Scale_720/model.ckpt-47000 \
+                   --batch 5 \
+                   --epochs 10
+
+python driver.py   --gpu 1       \
+                   --crop 720    \
+                   --attention Conv2d_2a_3x3    \
+                   --architecture InceptionResnetV2  \
+                   --load_path SAVE/Models/Scale_720-Conv2d_2a_3x3/model.ckpt-42500 \
+                   --batch 9 \
+                   --epochs 10000
+
+python driver.py   --gpu 0        \
+                   --crop 720     \
+                   --attention Conv2d_2a_3x3    \
+                   --load_path SAVE/Models/Scale_720-Conv2d_2a_3x3/model.ckpt-42500   \
+                   --test_dir /media/doubility/NUMEROUS/kaggle/process_data/validate   \
+                   --metric kappa accuracy  \
+                   --architecture InceptionResnetV2 \
+                   --multi_test 8  \
+                   --batch 1
+

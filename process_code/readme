@@ -1,0 +1,39 @@
+1. directory structure:
+   /media/doubility/DATA/kaggle/original
+   --------------------------------------> train/*.jpeg
+   --------------------------------------> test_val/*.jpeg
+   --------------------------------------> label/train_label.csv, test_val_label.csv
+   --------------------------------------> train_crop/
+   --------------------------------------> test_val_crop/
+   --------------------------------------> test_crop/
+   --------------------------------------> validate_crop/
+
+2. run python/split_test_val.py
+   change the following:
+       folder_path = '/media/doubility/DATA/kaggle/original'
+
+3. edit matlab/test1.m
+   3.1 generate train_crop/*.jpeg
+       change addpath('/home/doubility/PycharmProjects/battleNet0/process_code/matlab/');  % current folder
+              W=dir('/media/doubility/DATA/kaggle/original/train/*.jpeg');
+              rawImg=imread(['/media/doubility/DATA/kaggle/original/train/' W(i).name]);
+              imwrite(cropimg,strcat('/media/doubility/DATA/kaggle/original/train_crop/',W(i).name));
+
+   3.2 generate validate_crop/*.jpeg
+       change addpath('/home/doubility/PycharmProjects/battleNet0/process_code/matlab/');  % current folder
+              W=dir('/media/doubility/DATA/kaggle/original/validate/*.jpeg');
+              rawImg=imread(['/media/doubility/DATA/kaggle/original/validate/' W(i).name]);
+              imwrite(cropimg,strcat('/media/doubility/DATA/kaggle/original/validate_crop/',W(i).name));
+
+   3.3 generate test_crop/*.jpeg
+       change addpath('/home/doubility/PycharmProjects/battleNet0/process_code/matlab/');  % current folder
+              W=dir('/media/doubility/DATA/kaggle/original/test/*.jpeg');
+              rawImg=imread(['/media/doubility/DATA/kaggle/original/test/' W(i).name]);
+              imwrite(cropimg,strcat('/media/doubility/DATA/kaggle/original/test_crop/',W(i).name));
+
+4. edit python/scale_enhance_rotate_image.py
+   path = '/media/doubility/DATA/kaggle/original/'
+   run python scale_enhance_rotate_image.py
+
+5. $ cd /media/doubility/DATA/kaggle/
+
